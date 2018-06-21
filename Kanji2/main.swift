@@ -59,12 +59,15 @@ let textColorCode: String = arguments["color"] ?? "#000000"
 let backgroundColor: NSColor = NSColor(rgbColor: backgroundColorCode) ?? .white
 let textColor: NSColor = NSColor(rgbColor: textColorCode) ?? .black
 
-guard let image = Kanji.image(character, font: font, size: CGSize(width: CGFloat(width), height: CGFloat(height)), backgroundColor: backgroundColor, textColor: textColor) else {
+guard let image = Kanji.image(character, font: font, size: CGSize(width: CGFloat(width), height: CGFloat(height)), backgroundColor: backgroundColor, textColor: textColor),
+    let cgImage = image.cgImage(forProposedRect: nil, context: nil, hints: nil) else {
     print("image make failed")
     exit(1)
 }
 
-guard let data = image.tiffRepresentation else {
+let bitmap = NSBitmapImageRep(cgImage: cgImage)
+
+guard let data = bitmap.representation(using: .png, properties: [:]) else {
     print("data get failed")
     exit(1)
 }
